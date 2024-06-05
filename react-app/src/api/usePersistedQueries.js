@@ -7,7 +7,7 @@ accordance with the terms of the Adobe license agreement accompanying
 it.
 */
 
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import aemHeadlessClient from "./aemHeadlessClient";
 
 // environment variable for configuring the headless client
@@ -112,15 +112,18 @@ export function useAdventuresByActivity(adventureActivity, params) {
  * Calls the '[graphql endpoint namespace]/adventure-by-slug' persisted query with `slug` parameter.
  *
  * @param {String!} slugName the adventure slug
+ * @param variation
+ * @param params
  * @returns a JSON object representing the Adventure
  */
-export function useAdventureBySlug(slugName, params) {
+export function useAdventureBySlug(slugName, variation,  params) {
   const [adventure, setAdventure] = useState(null);
   const [references, setReferences] = useState(null);
   const [errors, setErrors] = useState(null);
-
   useEffect(() => {
     async function fetchData() {
+
+      window.hlx.rum.sampleRUM("experiment", {source: "wknd bali surf camp experiment", target: slugName + ":" + variation});
 
       let response;
 
@@ -128,11 +131,12 @@ export function useAdventureBySlug(slugName, params) {
       const queryVariables = { 
         ...params,
         slug: slugName,
+        variation: variation,
       };
 
       // Call the AEM GraphQL persisted query named "[graphql endpoint namespace]/adventure-by-slug" with parameters
       response = await fetchPersistedQuery(
-        REACT_APP_GRAPHQL_ENDPOINT + "/adventure-by-slug",
+        REACT_APP_GRAPHQL_ENDPOINT + "/adventure-by-slug-variation",
         queryVariables
       );
 
@@ -153,7 +157,7 @@ export function useAdventureBySlug(slugName, params) {
     // Call the internal fetchData() as per React best practices
     fetchData();
 
-  }, [slugName, params]);
+  }, [slugName, variation, params]);
 
   return { adventure, references, errors };
 }

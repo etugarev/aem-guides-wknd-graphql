@@ -6,7 +6,7 @@ NOTICE: Adobe permits you to use, modify, and distribute this file in
 accordance with the terms of the Adobe license agreement accompanying
 it.
 */
-import React, { useMemo } from 'react';
+import React, {useCallback, useMemo} from 'react';
 import { Link, useParams } from "react-router-dom";
 import { useAdventureBySlug } from "../api/usePersistedQueries";
 import { addAemHost } from "../api/aemHeadlessClient";
@@ -19,11 +19,18 @@ import Loading from "./Loading";
 
 function AdventureDetail() {
 
+    const randomNumberInRange = (min, max) => {
+        return Math.floor(Math.random()
+            * (max - min + 1)) + min;
+    };
+
+    const variations = ["variationa", "variationb"];
+
     // Read the slug value which is the parameter used to query for the adventure's details
     const { slug } = useParams();
     const queryParameters = useMemo(() => ({ format: 'JPG', preferWebp: true, width: 1200}), []);
     // Query AEM for the Adventures's details, using the `slug`
-    const { adventure, references, error } = useAdventureBySlug(slug, queryParameters);
+    const { adventure, references, error } = useAdventureBySlug(slug, variations[randomNumberInRange(0, 2)],  queryParameters);
 
     // Handle error and loading conditions
     if (error) {
@@ -52,7 +59,7 @@ function AdventureDetailRender({ title,
     description,
     itinerary,
     references }) {
-
+    const handleClick = useCallback(() => { alert("Thank you for booking!")}, []);
     return (<>
         <h1 className="adventure-detail-title">{title}</h1>
         <div className="adventure-detail-info">
@@ -69,6 +76,10 @@ function AdventureDetailRender({ title,
             <div className="adventure-detail-info-label">Price</div>
             <div className="adventure-detail-info-description">
                 {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)}
+            </div>
+            <div>
+                <button className="adventure-cta-button" type="button" onClick={handleClick}
+                >Book</button>
             </div>
         </div>
         <div className="adventure-detail-content">
