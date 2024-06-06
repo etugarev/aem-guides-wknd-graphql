@@ -6,7 +6,7 @@ NOTICE: Adobe permits you to use, modify, and distribute this file in
 accordance with the terms of the Adobe license agreement accompanying
 it.
 */
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import { Link, useParams } from "react-router-dom";
 import { useAdventureBySlug } from "../api/usePersistedQueries";
 import { addAemHost } from "../api/aemHeadlessClient";
@@ -24,13 +24,15 @@ function AdventureDetail() {
             * (max - min + 1)) + min;
     };
 
-    const variations = ["variationa", "variationb"];
+    const [index, setIndex] = useState(randomNumberInRange(0 ,2));
+
+    const variations = ["master", "variationa", "variationb"];
 
     // Read the slug value which is the parameter used to query for the adventure's details
     const { slug } = useParams();
     const queryParameters = useMemo(() => ({ format: 'JPG', preferWebp: true, width: 1200}), []);
     // Query AEM for the Adventures's details, using the `slug`
-    const { adventure, references, error } = useAdventureBySlug(slug, variations[randomNumberInRange(0, 2)],  queryParameters);
+    const { adventure, references, error } = useAdventureBySlug(slug, variations[index],  queryParameters);
 
     // Handle error and loading conditions
     if (error) {
