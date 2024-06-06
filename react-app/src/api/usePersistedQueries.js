@@ -44,6 +44,8 @@ async function fetchPersistedQuery(persistedQueryName, queryParameters) {
   }
 
   try {
+    //let variablesString = encodeURIComponent(Object.keys(queryParameters).map(key => `;${key}=${(queryParameters[key])}`).join(''))
+    //console.log(persistedQueryName, variablesString)
     // AEM GraphQL queries are asynchronous, either await their return or use Promise-based .then(..) { ... } syntax
     const response = await aemHeadlessClient.runPersistedQuery(
       persistedQueryName,

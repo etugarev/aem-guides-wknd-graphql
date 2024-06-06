@@ -78,8 +78,8 @@ function AdventureDetailRender({ title,
                 {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)}
             </div>
             <div>
-                <button className="adventure-cta-button" type="button" onClick={handleClick}
-                >Book</button>
+                <button className="adventure-cta-button" type="button"
+                        onClick={handleClick}>Book</button>
             </div>
         </div>
         <div className="adventure-detail-content">
