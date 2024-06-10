@@ -17,22 +17,23 @@ import './AdventureDetail.scss';
 import Error from "./Error";
 import Loading from "./Loading";
 
+const {
+    REACT_APP_AB_TESTING_PATH
+} = process.env;
+
 function AdventureDetail() {
 
     const randomNumberInRange = (min, max) => {
-        return Math.floor(Math.random()
-            * (max - min + 1)) + min;
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     };
-
-    const [index, setIndex] = useState(randomNumberInRange(0 ,2));
-
+    const [index] = useState(randomNumberInRange(0,2));
     const variations = ["master", "variationa", "variationb"];
 
     // Read the slug value which is the parameter used to query for the adventure's details
     const { slug } = useParams();
     const queryParameters = useMemo(() => ({ format: 'JPG', preferWebp: true, width: 1200}), []);
     // Query AEM for the Adventures's details, using the `slug`
-    const { adventure, references, error } = useAdventureBySlug(slug, variations[index],  queryParameters);
+    const { adventure, references, error } = useAdventureBySlug(slug, variations[index]);
 
     // Handle error and loading conditions
     if (error) {

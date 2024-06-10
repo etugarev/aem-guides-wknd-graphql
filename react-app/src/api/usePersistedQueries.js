@@ -9,6 +9,7 @@ it.
 
 import {useEffect, useState} from "react";
 import aemHeadlessClient from "./aemHeadlessClient";
+import experiment from "./experiment";
 
 // environment variable for configuring the headless client
 const { DISABLE_CACHE, REACT_APP_GRAPHQL_ENDPOINT} = process.env;
@@ -125,16 +126,18 @@ export function useAdventureBySlug(slugName, variation,  params) {
   useEffect(() => {
     async function fetchData() {
 
-      window.hlx.rum.sampleRUM("experiment", {source: "wknd bali surf camp experiment", target: slugName + ":" + variation});
-
-      let response;
-
-      // The key is 'slug' as defined in the persisted query
-      const queryVariables = { 
+      let queryVariables = {
         ...params,
-        slug: slugName,
-        variation: variation,
+        slug: slugName
       };
+
+
+      if (slugName === "bali-surf-camp") {
+        window.hlx.rum.sampleRUM("experiment", {source: "WKND Bali surf camp experiment", target: slugName + ":" + variation});
+        queryVariables.variation = variation;
+      }
+
+      let response
 
       // Call the AEM GraphQL persisted query named "[graphql endpoint namespace]/adventure-by-slug" with parameters
       response = await fetchPersistedQuery(
